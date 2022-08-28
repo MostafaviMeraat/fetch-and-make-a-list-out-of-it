@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 1 Advance JS</title>
+</head>
+<body>
+    
+    <script>
+
+request = (method, url) => {
+        
+        const promise = new Promise((resolve, reject) => {
+    
+        const xhr = new XMLHttpRequest();
+        xhr.open(method,url);
+        // xhr.responseType = 'json'; // one way or we can parse it
+        xhr.send();
+        xhr.onload = () => {
+        resolve(JSON.parse(xhr.response));
+        };
+    });
+        
+        return promise
+    };
+
+    request("GET","https://reqres.in/api/users?page=1").then(responseData => {
+
+        // responseData.data.forEach(e => { // ostad way 
+        //     console.log(Object.entries(e)[0])
+        //     for	(const [k, v] of Object.entries(e)) {
+        //    	console.log(k, v)
+        //     }       
+            
+            responseData.data.forEach(e => { 
+                let counter = 0;
+            const keys = Object.keys(e);
+            const values = Object.values(e);
+            const keysAndVals = Object.entries(e);
+            // console.log(keysAndVals);
+            keysAndVals.forEach( e1 => {
+                if(counter %5==0){
+                    let br = document.createElement("br");
+                    document.body.appendChild(br);
+                }
+                let lable = document.createElement("lable");
+                let br = document.createElement("br");
+                lable.textContent = e1[0]+": "+e1[1];
+                document.body.appendChild(lable);
+                
+                document.body.appendChild(br);
+                counter++;
+                    })
+                })
+                
+
+                fetch("https://reqres.in/api/users",{ //using fetch to send data to server 
+                    method:"POST",
+                    body: JSON.stringify({
+                        "name": "morpheus",
+                        "job": "leader"
+                    }),
+                    headers:{
+                        'Content-Type': 'application/json',
+                    }
+                }).then(response => response.json()) // take the response and add it into form 
+                .then(data => {
+                    let br = document.createElement("br");
+                    document.body.appendChild(br);
+                    // console.log(data)
+                    for (const e in data ){
+                        // console.log(e);
+                       let lable = document.createElement('lable');
+                        lable.textContent = e + ": "+ data[e];
+                        document.body.appendChild(lable);
+                        let br = document.createElement("br");
+                        document.body.appendChild(br);
+                    }
+
+                }).catch(data => {
+                    console.log(data);
+                    if(data.response >= 100 || data.response < 200 ){
+                        alert ("Informational")
+                    }
+                    else if(data.response >= 200 || data.response < 300 ){
+                        alert ("Succesful")
+                    }
+                    else if(data.response >= 300 || data.response < 400 ){
+                        alert ("Redirection")
+                    }
+                    else if(data.response >= 400 || data.response < 500 ){
+                        alert ("Client Error")
+                    }
+                    else if(data.response >= 500){
+                        alert ("Server Error")
+                    }
+                })
+
+                
+        })
+
+
+       
+           
+
+    </script>
+</body>
+</html>
